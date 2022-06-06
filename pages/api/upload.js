@@ -1,8 +1,6 @@
-import fs from "fs";
 import apiRoute from "libs/apiRoute";
 import logger from "libs/logger";
 import multer from "multer";
-import path from "path";
 const { Storage } = require("@google-cloud/storage");
 
 const storage = multer.memoryStorage();
@@ -58,14 +56,14 @@ function sendUploadToGCS(req, res, next) {
 // Process a POST request
 routes
   .post(async (req, res, next) => {
-    const currFile = fs.readFileSync(
-      path.resolve(path.resolve(), "public/uploads/abc.txt")
-    );
+    // const currFile = fs.readFileSync(
+    //   path.resolve(path.resolve(), "public/uploads/abc.txt")
+    // );
 
-    fs.writeFileSync(
-      path.resolve(path.resolve(), "public/uploads/abc.txt"),
-      [currFile, new Date().toLocaleString()].join("\n")
-    );
+    // fs.writeFileSync(
+    //   path.resolve(path.resolve(), "public/uploads/abc.txt"),
+    //   [currFile, new Date().toLocaleString()].join("\n")
+    // );
 
     sendUploadToGCS(req, res, next).then(() => {
       res
