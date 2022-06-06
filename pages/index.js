@@ -17,6 +17,8 @@ export default function Home() {
         </p>
       </main>
 
+      <img src='uploads/a.jpeg' alt='a' />
+
       <Footer />
     </div>
   );
