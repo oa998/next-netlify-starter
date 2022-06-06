@@ -1,12 +1,8 @@
 import apiRoute from "libs/apiRoute";
 import multer from "multer";
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: "./public/uploads",
-    filename: (req, file, cb) => cb(null, file.originalname),
-  }),
-});
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const routes = apiRoute;
 
