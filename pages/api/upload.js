@@ -1,5 +1,4 @@
 import apiRoute from "libs/apiRoute";
-import logger from "libs/logger";
 import multer from "multer";
 
 const upload = multer({
@@ -16,7 +15,7 @@ routes.use(upload.array("uploaded-file"));
 // Process a POST request
 routes
   .post(async (req, res) => {
-    logger.info(Object.keys(req.body));
+    // logger.info(Object.keys(req.body));
     res.status(200).json({ message: "hello", successfullyCalledBackend: true });
   })
   .get((req, res) => {
