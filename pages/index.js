@@ -1,4 +1,4 @@
-import { Avatar, Badge, Container, Group, Stack } from "@mantine/core";
+import { Avatar, Badge, Container, Group, Modal, Stack } from "@mantine/core";
 import axios from "axios";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
@@ -38,6 +38,11 @@ export default function Home() {
   const [images, setImages] = useState([]);
   const [ping, setPing] = useState({});
   const [processedCats, setProcessedCats] = useState([]);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  const maximizeMe = (event) => {
+    setSelectedImage(event.target.src);
+  };
 
   useEffect(() => {
     // get images to show
@@ -144,6 +149,21 @@ export default function Home() {
           gridTemplateColumns: "1fr",
         }}
       >
+        <Modal
+          size='100%'
+          opened={!!selectedImage}
+          onClose={() => setSelectedImage("")}
+        >
+          <img
+            src={selectedImage}
+            alt={selectedImage}
+            style={{
+              width: "100%",
+              objectFit: "scale-down",
+            }}
+            onClick={() => setSelectedImage("")}
+          />
+        </Modal>
         <h1
           style={{ margin: "30px 0", textAlign: "center", fontSize: "2.5em" }}
         >
@@ -257,6 +277,7 @@ export default function Home() {
                     objectFit: "contain",
                     borderRadius: "15px",
                   }}
+                  onClick={maximizeMe}
                 />
                 <Group style={{ padding: "5px" }}>
                   {image.cats.split("").map((letter) => {
