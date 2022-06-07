@@ -231,47 +231,51 @@ export default function Home() {
         <div style={{ color: "white", textAlign: "center" }}>
           Latest Pictures:
         </div>
-        {images.map((image) => {
-          return (
-            <div
-              style={{
-                width: "100%",
-                background: "black",
-                color: "white",
-                padding: "5px",
-                borderRadius: "15px",
-              }}
-            >
-              <img
-                src={image.url}
-                alt={image.filename}
-                key={image.url}
-                style={{
-                  width: "100%",
-                  objectFit: "contain",
-                  borderRadius: "15px",
-                }}
-              />
-              <Group style={{ padding: "5px" }}>
-                {image.cats.split("").map((letter) => {
-                  if (letter === "a") return <Badge>Arya</Badge>;
-                  if (letter === "n") return <Badge>Nook</Badge>;
-                  if (letter === "p") return <Badge>Pik</Badge>;
-                })}
-              </Group>
+        {images
+          .slice()
+          .sort((a, b) => a.time - b.time)
+          .map((image) => {
+            return (
               <div
                 style={{
                   width: "100%",
-                  textAlign: "right",
-                  paddingRight: "5px",
-                  fontSize: "0.5em",
+                  background: "black",
+                  color: "white",
+                  padding: "5px",
+                  borderRadius: "15px",
                 }}
+                key={image.url}
               >
-                {image.time}
+                <img
+                  src={image.url}
+                  alt={image.filename}
+                  key={image.url}
+                  style={{
+                    width: "100%",
+                    objectFit: "contain",
+                    borderRadius: "15px",
+                  }}
+                />
+                <Group style={{ padding: "5px" }}>
+                  {image.cats.split("").map((letter) => {
+                    if (letter === "a") return <Badge>Arya</Badge>;
+                    if (letter === "n") return <Badge>Nook</Badge>;
+                    if (letter === "p") return <Badge>Pik</Badge>;
+                  })}
+                </Group>
+                <div
+                  style={{
+                    width: "100%",
+                    textAlign: "right",
+                    paddingRight: "5px",
+                    fontSize: "1em",
+                  }}
+                >
+                  {image.time}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
       {/* </div> */}
     </Container>

@@ -32,6 +32,16 @@ export default (props) => {
         document.querySelector("#feedback").innerText = "Submitted";
         setTimeout(() => (window.location.pathname = "/"), 1000);
         return response;
+      })
+      .catch((e) => {
+        const {
+          response: { data },
+        } = e;
+        document.querySelector("#error").innerText = JSON.stringify(
+          data,
+          null,
+          2
+        );
       });
   };
 
