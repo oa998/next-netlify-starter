@@ -214,7 +214,7 @@ export default function Home() {
                           padding: "0 20px",
                         }}
                       >
-                        <u>{data.tag}</u>
+                        {data.tag}
                       </div>
                       <div
                         style={{
