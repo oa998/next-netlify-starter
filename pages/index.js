@@ -121,7 +121,7 @@ export default function Home() {
           dur = `${time} Hours Ago`;
         } else if (durations.hr === 1) {
           dur = `${durations.hr} Hour Ago`;
-        } else if (durations < 2) {
+        } else if (durations.min < 2) {
           dur = "Just Now!";
         } else {
           dur = `${durations.min} Mins Ago`;
