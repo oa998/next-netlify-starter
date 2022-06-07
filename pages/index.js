@@ -1,7 +1,7 @@
 import { Avatar, Badge, Container, Group, Stack } from "@mantine/core";
 import axios from "axios";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { durationSince } from "util/date";
 
 const Tags = {
@@ -121,12 +121,19 @@ export default function Home() {
     setProcessedCats(processed);
   }, [ping]);
 
+  const favicon = useMemo(() => {
+    const r = Math.random();
+    if (r < 0.3333) return "/arya.ico";
+    if (r < 0.6666) return "/nook.ico";
+    return "/pik.ico";
+  }, []);
+
   return (
     <Container size='lg' px='lg'>
       {/* <div style={{ paddingBottom: "100px" }}> */}
       <Head>
         <title>IMCA</title>
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href={favicon} />
       </Head>
 
       <main
