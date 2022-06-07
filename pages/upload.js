@@ -34,9 +34,7 @@ export default (props) => {
         return response;
       })
       .catch((e) => {
-        const {
-          response: { data },
-        } = e;
+        const { response } = e;
         document.querySelector("#error").innerText = JSON.stringify(
           data,
           null,

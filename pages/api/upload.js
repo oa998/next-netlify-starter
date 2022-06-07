@@ -21,7 +21,6 @@ function sendUploadToGCS(req, res, next) {
     const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
     const uploadedFile = req.files[0];
 
-    console.log({ time });
     // The ID of your GCS bucket
     const bucketName = "cdn_js";
 
