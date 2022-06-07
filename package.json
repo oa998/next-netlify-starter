@@ -16,7 +16,8 @@
     "next-connect": "^0.12.2",
     "pino": "^8.0.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "tabler-icons-react": "^1.48.1"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^4.7.1"

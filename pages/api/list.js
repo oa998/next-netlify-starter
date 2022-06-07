@@ -20,9 +20,17 @@ async function listAllFiles() {
   });
 
   const [files] = await gcpStorage.bucket(bucketName).getFiles();
-  return files.map(
-    ({ id }) => `https://storage.googleapis.com/${bucketName}/${id}`
-  );
+  const returnList = [];
+  for (const file of files) {
+    const [data] = await file.getMetadata();
+    const customMeta = data.metadata || {};
+    const obj = {
+      url: `https://storage.googleapis.com/${bucketName}/${file.id}`,
+      orientation: customMeta.orientation,
+    };
+    returnList.push(obj);
+  }
+  return returnList;
 }
 
 routes.get((req, res) => {

@@ -30,16 +30,3 @@ h1 {
   text-shadow: 2px 2px #000;
   font-size: 1.4em;
 }
-
-.upload-page button {
-  font-size: 1.5em;
-}
-
-.full-size-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  object-fit: scale-down;
-  height: 100%;
-  width: auto;
-}

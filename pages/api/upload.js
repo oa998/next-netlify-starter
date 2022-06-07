@@ -19,6 +19,8 @@ function sendUploadToGCS(req, res, next) {
   return new Promise((resolve, reject) => {
     const checks = req.headers["checks"]; // a string like "ap" for "arya" and "pik"
     const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
+    const orientation = req.headers["orientation"]; // portrait or landscape
+
     const uploadedFile = req.files[0];
 
     // The ID of your GCS bucket
@@ -32,10 +34,12 @@ function sendUploadToGCS(req, res, next) {
     const gcsname = `${checks}_${time}`;
     const bucket = gcpStorage.bucket(bucketName);
     const file = bucket.file(gcsname);
-
     const stream = file.createWriteStream({
       metadata: {
         contentType: uploadedFile.mimetype,
+        metadata: {
+          orientation: orientation,
+        },
       },
       resumable: false,
     });

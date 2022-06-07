@@ -1,6 +1,7 @@
 import { Avatar, Badge, Container, Group, Modal, Stack } from "@mantine/core";
 import axios from "axios";
 import Head from "next/head";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { durationSince } from "util/date";
 
@@ -8,6 +9,17 @@ const Tags = {
   SLEEPING: "Sleeping",
   PROBABLY: "Probably",
   YES: "Yes",
+};
+
+const Orientation = {
+  PORTRAIT: {
+    width: 342,
+    height: 608,
+  },
+  LANDSCAPE: {
+    width: 768,
+    height: 432,
+  },
 };
 
 const getTag = (cat, durations, ping) => {
@@ -48,7 +60,7 @@ export default function Home() {
     // get images to show
     axios("/api/list").then(({ data }) => {
       const { files } = data;
-      const i = files.map((url) => {
+      const i = files.map(({ url, orientation }) => {
         const filename = url.split("/").slice(-1)[0];
         const cats = filename.split("_")[0];
         const time = new Date(+filename.split("_")[1]).toLocaleString("en-US", {
@@ -64,6 +76,7 @@ export default function Home() {
           originalTime: +filename.split("_")[1],
           time,
           cats,
+          orientation,
         };
       });
       setImages(i);
@@ -151,18 +164,22 @@ export default function Home() {
       >
         <Modal
           size='100%'
-          opened={!!selectedImage}
-          onClose={() => setSelectedImage("")}
+          opened={!!selectedImage.url}
+          onClose={() => setSelectedImage({})}
         >
-          <img
-            src={selectedImage}
-            alt={selectedImage}
-            style={{
-              width: "100%",
-              objectFit: "scale-down",
-            }}
-            onClick={() => setSelectedImage("")}
-          />
+          {selectedImage.url ? (
+            <Image
+              src={selectedImage.url}
+              alt={selectedImage.filename}
+              {...(selectedImage.orientation === "portrait"
+                ? Orientation.PORTRAIT
+                : Orientation.LANDSCAPE)}
+              layout='intrinsic'
+              sx={{
+                borderRadius: "15px",
+              }}
+            />
+          ) : null}
         </Modal>
         <h1
           style={{ margin: "30px 0", textAlign: "center", fontSize: "2.5em" }}
@@ -268,22 +285,24 @@ export default function Home() {
                 }}
                 key={image.url}
               >
-                <img
+                <Image
                   src={image.url}
                   alt={image.filename}
+                  {...(image.orientation === "portrait"
+                    ? Orientation.PORTRAIT
+                    : Orientation.LANDSCAPE)}
                   key={image.url}
-                  style={{
-                    width: "100%",
-                    objectFit: "contain",
+                  layout='intrinsic'
+                  sx={{
                     borderRadius: "15px",
                   }}
-                  onClick={maximizeMe}
+                  onClick={() => setSelectedImage(image)}
                 />
                 <Group style={{ padding: "5px" }}>
                   {image.cats.split("").map((letter) => {
-                    if (letter === "a") return <Badge>Arya</Badge>;
-                    if (letter === "n") return <Badge>Nook</Badge>;
-                    if (letter === "p") return <Badge>Pik</Badge>;
+                    if (letter === "a") return <Badge key='arya'>Arya</Badge>;
+                    if (letter === "n") return <Badge key='nook'>Nook</Badge>;
+                    if (letter === "p") return <Badge key='pik'>Pik</Badge>;
                   })}
                 </Group>
                 <div
