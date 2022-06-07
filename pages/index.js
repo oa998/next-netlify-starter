@@ -132,7 +132,7 @@ export default function Home() {
     <Container size='lg' px='lg'>
       {/* <div style={{ paddingBottom: "100px" }}> */}
       <Head>
-        <title>IMCA</title>
+        <title>AMCA</title>
         <link rel='icon' href={favicon} />
       </Head>
 
@@ -146,7 +146,7 @@ export default function Home() {
         <h1
           style={{ margin: "30px 0", textAlign: "center", fontSize: "2.5em" }}
         >
-          Is My Cat Alive?!
+          Are My Cats Alive?!
         </h1>
         <div
           style={{
