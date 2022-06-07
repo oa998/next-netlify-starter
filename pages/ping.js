@@ -58,6 +58,7 @@ export default (props) => {
           null,
           2
         );
+        setTimeout(() => (window.location.pathname = "/"), 1000);
       })
       .catch((e) => {
         document.querySelector("#feedback").innerText = JSON.stringify(

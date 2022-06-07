@@ -213,10 +213,11 @@ export default function Home() {
               margin: "10px 0",
               width: "80%",
               alignSelf: "center",
-              backgroundColor: "black",
+              color: ping.door?.closed ? "hsl(225, 100%, 66%)" : "black",
+              backgroundColor: ping.door?.closed ? "black" : "lime",
             }}
           >
-            Door Closed
+            {`Door ${ping.door?.closed ? "Closed" : "Open"}`}
           </Badge>
         </div>
       </main>
@@ -229,7 +230,7 @@ export default function Home() {
           gap: "30px",
         }}
       >
-        <div style={{ color: "white", textAlign: "center" }}>
+        <div style={{ color: "white", textAlign: "center", fontSize: "1.2em" }}>
           Latest Pictures:
         </div>
         {images
