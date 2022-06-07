@@ -56,6 +56,7 @@ export default function Home() {
         return {
           url,
           filename,
+          originalTime: +filename.split("_")[1],
           time,
           cats,
         };
@@ -233,7 +234,7 @@ export default function Home() {
         </div>
         {images
           .slice()
-          .sort((a, b) => a.time - b.time)
+          .sort((a, b) => b.originalTime - a.originalTime)
           .map((image) => {
             return (
               <div
