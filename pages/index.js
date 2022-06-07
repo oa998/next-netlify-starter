@@ -63,17 +63,20 @@ export default function Home() {
       const i = files.map(({ url, orientation }) => {
         const filename = url.split("/").slice(-1)[0];
         const cats = filename.split("_")[0];
-        const time = new Date(+filename.split("_")[1]).toLocaleString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        const time = new Date(+filename.split(/[_\.]/g)[1]).toLocaleString(
+          "en-US",
+          {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        );
         return {
           url,
           filename,
-          originalTime: +filename.split("_")[1],
+          originalTime: +filename.split(/[_\.]/g)[1],
           time,
           cats,
           orientation,
