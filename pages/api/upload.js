@@ -1,11 +1,10 @@
 import apiRoute from "libs/apiRoute";
-import logger from "libs/logger";
 import multer from "multer";
 const { Storage } = require("@google-cloud/storage");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const routes = apiRoute;
+const routes = apiRoute();
 
 routes.use(upload.array("uploaded-file"));
 
@@ -16,15 +15,13 @@ const credential = JSON.parse(
   ).toString()
 );
 
-logger.info(
-  "cred..." + process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64.substr(0, 20)
-);
-
-logger.info("proj..." + process.env.GCP_PROJECT_ID);
-
 function sendUploadToGCS(req, res, next) {
   return new Promise((resolve, reject) => {
+    const checks = req.headers["checks"]; // a string like "ap" for "arya" and "pik"
+    const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
     const uploadedFile = req.files[0];
+
+    console.log({ time });
     // The ID of your GCS bucket
     const bucketName = "cdn_js";
 
@@ -33,8 +30,7 @@ function sendUploadToGCS(req, res, next) {
       credentials: credential,
     });
 
-    const gcsname =
-      uploadedFile.originalname + "_" + Math.floor(Math.random() * 500);
+    const gcsname = `${checks}_${time}`;
     const bucket = gcpStorage.bucket(bucketName);
     const file = bucket.file(gcsname);
 
@@ -54,61 +50,16 @@ function sendUploadToGCS(req, res, next) {
 }
 
 // Process a POST request
-routes
-  .post(async (req, res, next) => {
-    // const currFile = fs.readFileSync(
-    //   path.resolve(path.resolve(), "public/uploads/abc.txt")
-    // );
-
-    // fs.writeFileSync(
-    //   path.resolve(path.resolve(), "public/uploads/abc.txt"),
-    //   [currFile, new Date().toLocaleString()].join("\n")
-    // );
-
-    sendUploadToGCS(req, res, next).then(() => {
-      res
-        .status(200)
-        .json({ message: "hello", successfullyCalledBackend: true });
-    });
-  })
-  .get((req, res) => {
-    res.status(200).json({ message: "hello" });
+routes.post(async (req, res, next) => {
+  sendUploadToGCS(req, res, next).then(() => {
+    res.status(200).json({ message: "hello", successfullyCalledBackend: true });
   });
+});
 
-export default apiRoute;
+export default routes;
 
 export const config = {
   api: {
     bodyParser: false, // Disallow body parsing, consume as stream
   },
 };
-
-/*
-
-// The ID of your GCS bucket
-// const bucketName = 'your-unique-bucket-name';
-
-// The path to your file to upload
-// const filePath = 'path/to/your/file';
-
-// The new ID for your GCS file
-// const destFileName = 'your-new-file-name';
-
-// Imports the Google Cloud client library
-const {Storage} = require('@google-cloud/storage');
-
-// Creates a client
-const storage = new Storage();
-
-async function uploadFile() {
-  await storage.bucket(bucketName).upload(filePath, {
-    destination: destFileName,
-  });
-
-  console.log(`${filePath} uploaded to ${bucketName}`);
-}
-
-uploadFile().catch(console.error);
-
-
-*/
