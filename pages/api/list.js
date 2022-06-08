@@ -24,7 +24,6 @@ async function listAllFiles() {
   for (const file of files) {
     const [data] = await file.getMetadata();
     const customMeta = data.metadata || {};
-    console.log(file.id);
     const obj = {
       url: `https://storage.googleapis.com/${bucketName}/${file.id}`,
       orientation: customMeta.orientation,

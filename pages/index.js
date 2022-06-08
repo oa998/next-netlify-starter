@@ -1,8 +1,17 @@
-import { Avatar, Badge, Container, Group, Modal, Stack } from "@mantine/core";
+import {
+  Avatar,
+  Badge,
+  Container,
+  Group,
+  Modal,
+  Stack,
+  Tooltip,
+} from "@mantine/core";
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { Home2, Trees } from "tabler-icons-react";
 import { durationSince } from "util/date";
 
 const Tags = {
@@ -137,6 +146,7 @@ export default function Home() {
             duration: dur,
             tag,
             color,
+            lastLocation: obj.lastLocation,
           },
         };
       });
@@ -169,6 +179,7 @@ export default function Home() {
           size='100%'
           opened={!!selectedImage.url}
           onClose={() => setSelectedImage({})}
+          align='center'
         >
           {selectedImage.url ? (
             <Image
@@ -226,23 +237,40 @@ export default function Home() {
                         size='lg'
                       />
                     }
+                    rightSection={
+                      <Tooltip
+                        position='bottom'
+                        placement='center'
+                        gutter={10}
+                        label={data.lastLocation}
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        {data.lastLocation === "inside" ? <Home2 /> : <Trees />}
+                      </Tooltip>
+                    }
                   >
                     <Stack align={"center"} spacing={0}>
-                      <div
-                        style={{
-                          lineHeight: "1.5em",
-                          padding: "0 20px",
-                        }}
-                      >
-                        {data.tag}
-                      </div>
-                      <div
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "0.6em",
-                          padding: "0 20px",
-                        }}
-                      >{`Last seen: ${data.duration}`}</div>
+                      {data.tag === Tags.SLEEPING ? (
+                        <div
+                          style={{
+                            lineHeight: "1.5em",
+                            padding: "0 20px",
+                          }}
+                        >
+                          {data.tag}
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            lineHeight: "1.5em",
+                            padding: "0 20px",
+                          }}
+                        >
+                          {`Last seen:`}
+                          <br />
+                          {data.duration}
+                        </div>
+                      )}
                     </Stack>
                   </Badge>
                 );
@@ -279,8 +307,10 @@ export default function Home() {
           .map((image) => {
             return (
               <div
+                className='img-container'
                 style={{
                   width: "100%",
+                  maxWidth: "100%",
                   background: "black",
                   color: "white",
                   padding: "5px",
@@ -295,10 +325,7 @@ export default function Home() {
                     ? Orientation.PORTRAIT
                     : Orientation.LANDSCAPE)}
                   key={image.url}
-                  layout='intrinsic'
-                  sx={{
-                    borderRadius: "15px",
-                  }}
+                  layout='responsive'
                   onClick={() => setSelectedImage(image)}
                 />
                 <Group style={{ padding: "5px" }}>
