@@ -122,10 +122,28 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const aryaMax = Math.max(
+      ...images.filter((i) => i.cats.includes("a")).map((i) => i.originalTime)
+    );
+    const nookMax = Math.max(
+      ...images.filter((i) => i.cats.includes("n")).map((i) => i.originalTime)
+    );
+    const pikMax = Math.max(
+      ...images.filter((i) => i.cats.includes("p")).map((i) => i.originalTime)
+    );
+
+    const pictureTimes = {
+      arya: aryaMax || 0,
+      nook: nookMax || 0,
+      pik: pikMax || 0,
+    };
+
     const processed = Object.entries(ping)
       .filter(([key]) => key !== "door")
       .map(([cat, obj]) => {
-        const durations = durationSince(obj.lastTime);
+        const durations = durationSince(
+          Math.max(obj.lastTime, pictureTimes[cat])
+        );
         const time =
           Math.round((durations.hr + durations.min / 60) * 100) / 100;
         let dur = "";
@@ -151,7 +169,7 @@ export default function Home() {
         };
       });
     setProcessedCats(processed);
-  }, [ping]);
+  }, [ping, images]);
 
   const favicon = useMemo(() => {
     const r = Math.random();
