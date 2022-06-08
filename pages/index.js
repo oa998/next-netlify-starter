@@ -239,7 +239,7 @@ export default function Home() {
                     }
                     rightSection={
                       <Tooltip
-                        position='bottom'
+                        position='top'
                         placement='center'
                         gutter={10}
                         label={data.lastLocation}
