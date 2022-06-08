@@ -4,6 +4,7 @@ import {
   Container,
   Group,
   Modal,
+  Skeleton,
   Stack,
   Tooltip,
 } from "@mantine/core";
@@ -286,7 +287,14 @@ export default function Home() {
                         >
                           {`Last seen:`}
                           <br />
-                          {data.duration}
+                          <Skeleton
+                            height={"100%"}
+                            width='100%'
+                            radius={0}
+                            visible={!images.length}
+                          >
+                            {data.duration}
+                          </Skeleton>
                         </div>
                       )}
                     </Stack>
