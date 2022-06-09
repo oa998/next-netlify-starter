@@ -27,6 +27,7 @@ async function listAllFiles() {
     const obj = {
       url: `https://storage.googleapis.com/${bucketName}/${file.id}`,
       orientation: customMeta.orientation,
+      caption: customMeta.caption,
     };
     returnList.push(obj);
   }

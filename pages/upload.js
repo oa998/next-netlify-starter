@@ -1,4 +1,4 @@
-import { Button, Group, SegmentedControl } from "@mantine/core";
+import { Button, Group, SegmentedControl, TextInput } from "@mantine/core";
 import axios from "axios";
 import { useCallback, useRef, useState } from "react";
 import { Activity, Home } from "tabler-icons-react";
@@ -9,6 +9,7 @@ export default (props) => {
   const [hourSubtracted, setHoursSubtracted] = useState(0);
   const [orientation, setOrientation] = useState("portrait");
   const [isUploading, setIsUploading] = useState(false);
+  const [caption, setCaption] = useState("");
 
   const onChange = useCallback(
     async (formData, checks) => {
@@ -24,6 +25,7 @@ export default (props) => {
           checks,
           time: time.getTime(),
           orientation,
+          caption,
         },
         // onUploadProgress: (event) => {
         //   console.log(
@@ -45,7 +47,7 @@ export default (props) => {
         })
         .then(() => setIsUploading(false));
     },
-    [hourSubtracted, orientation]
+    [hourSubtracted, orientation, caption]
   );
 
   const onClickHandler = () => {
@@ -158,6 +160,11 @@ export default (props) => {
             { label: "portrait", value: "portrait" },
             { label: "landscape", value: "landscape" },
           ]}
+        />
+        <TextInput
+          value={caption}
+          placeholder='Image Caption'
+          onChange={(event) => setCaption(event.currentTarget.value)}
         />
         <Button
           size='xl'

@@ -70,7 +70,7 @@ export default function Home() {
     // get images to show
     axios("/api/list").then(({ data }) => {
       const { files } = data;
-      const i = files.map(({ url, orientation }) => {
+      const i = files.map(({ url, orientation, caption }) => {
         const filename = url.split("/").slice(-1)[0];
         const cats = filename.split("_")[0];
         const time = new Date(+filename.split(/[_\.]/g)[1]).toLocaleString(
@@ -90,6 +90,7 @@ export default function Home() {
           time,
           cats,
           orientation,
+          caption,
         };
       });
       setImages(i);
@@ -369,6 +370,9 @@ export default function Home() {
                     fontSize: "1em",
                   }}
                 >
+                  {!!image.caption ? (
+                    <div style={{ color: "lime" }}>{image.caption}</div>
+                  ) : null}
                   {image.time}
                 </div>
               </div>

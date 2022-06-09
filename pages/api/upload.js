@@ -20,6 +20,7 @@ function sendUploadToGCS(req, res, next) {
     const checks = req.headers["checks"]; // a string like "ap" for "arya" and "pik"
     const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
     const orientation = req.headers["orientation"]; // portrait or landscape
+    const caption = req.headers["caption"]; // portrait or landscape
 
     const uploadedFile = req.files[0];
 
@@ -39,6 +40,7 @@ function sendUploadToGCS(req, res, next) {
         contentType: uploadedFile.mimetype,
         metadata: {
           orientation: orientation,
+          caption,
         },
       },
       resumable: false,
