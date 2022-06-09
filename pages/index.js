@@ -371,7 +371,9 @@ export default function Home() {
                   }}
                 >
                   {!!image.caption ? (
-                    <div style={{ color: "lime" }}>{image.caption}</div>
+                    <div style={{ color: "lime", textAlign: "left" }}>
+                      {image.caption}
+                    </div>
                   ) : null}
                   {image.time}
                 </div>
