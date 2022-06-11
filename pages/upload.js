@@ -1,4 +1,4 @@
-import { Button, Group, SegmentedControl, TextInput } from "@mantine/core";
+import { Button, Group, TextInput } from "@mantine/core";
 import axios from "axios";
 import Compressor from "compressorjs";
 import { useCallback, useRef, useState } from "react";
@@ -8,7 +8,6 @@ export default (props) => {
   const fileInputRef = useRef(null);
   const formRef = useRef(null);
   const [hourSubtracted, setHoursSubtracted] = useState(0);
-  const [orientation, setOrientation] = useState("portrait");
   const [isUploading, setIsUploading] = useState(false);
   const [caption, setCaption] = useState("");
 
@@ -25,7 +24,6 @@ export default (props) => {
           "content-type": "multipart/form-data",
           checks,
           time: time.getTime(),
-          orientation,
           caption,
           width,
           height,
@@ -44,7 +42,7 @@ export default (props) => {
         })
         .then(() => setIsUploading(false));
     },
-    [hourSubtracted, orientation, caption]
+    [hourSubtracted, caption]
   );
 
   const onClickHandler = () => {
@@ -178,15 +176,6 @@ export default (props) => {
           />
           <label htmlFor='hours-ago'>Hours ago</label>
         </Group>
-        <SegmentedControl
-          color='dark'
-          value={orientation}
-          onChange={setOrientation}
-          data={[
-            { label: "portrait", value: "portrait" },
-            { label: "landscape", value: "landscape" },
-          ]}
-        />
         <TextInput
           value={caption}
           placeholder='Image Caption'

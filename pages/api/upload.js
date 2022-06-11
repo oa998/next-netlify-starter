@@ -19,7 +19,6 @@ function sendUploadToGCS(req, res, next) {
   return new Promise((resolve, reject) => {
     const checks = req.headers["checks"]; // a string like "ap" for "arya" and "pik"
     const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
-    const orientation = req.headers["orientation"]; // portrait or landscape
     const caption = req.headers["caption"]; // portrait or landscape
     const width = req.headers["width"]; // portrait or landscape
     const height = req.headers["height"]; // portrait or landscape
@@ -41,7 +40,6 @@ function sendUploadToGCS(req, res, next) {
       metadata: {
         contentType: uploadedFile.mimetype,
         metadata: {
-          orientation: orientation,
           caption,
           width,
           height,

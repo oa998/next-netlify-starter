@@ -62,10 +62,6 @@ export default function Home() {
   const [processedCats, setProcessedCats] = useState([]);
   const [selectedImage, setSelectedImage] = useState("");
 
-  const maximizeMe = (event) => {
-    setSelectedImage(event.target.src);
-  };
-
   useEffect(() => {
     // get images to show
     axios("/api/list").then(({ data }) => {
@@ -83,6 +79,9 @@ export default function Home() {
             minute: "2-digit",
           }
         );
+        if (url.includes("397")) {
+          console.log({ width, height });
+        }
         return {
           url,
           filename,
@@ -347,6 +346,8 @@ export default function Home() {
                 }}
                 key={image.url}
               >
+                {image.url.includes("397") &&
+                  console.log({ url: image.url, dimsz: image.dims })}
                 <Image
                   src={image.url}
                   alt={image.filename}
