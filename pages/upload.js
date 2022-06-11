@@ -36,7 +36,7 @@ export default (props) => {
         .post("/api/upload", formData, config)
         .then((response) => {
           document.querySelector("#feedback").innerText = "Submitted";
-          setTimeout(() => (window.location.pathname = "/"), 1000);
+          setTimeout(() => (window.location.pathname = "/"), 1500);
           return response;
         })
         .catch((e) => {
@@ -87,7 +87,11 @@ export default (props) => {
 
               // The third parameter is required for server
               formData.append(event.target.name, compressedFile);
-
+              document.querySelector(
+                "#feedback"
+              ).innerText = `File reduction by ${Math.round(
+                ((file.size - compressedFile.size) / file.size) * 100
+              )}%`;
               onChange(formData, checks.map(({ value }) => value).join(""), {
                 width,
                 height,
