@@ -70,7 +70,7 @@ export default function Home() {
     // get images to show
     axios("/api/list").then(({ data }) => {
       const { files } = data;
-      const i = files.map(({ url, orientation, caption }) => {
+      const i = files.map(({ url, orientation, caption, width, height }) => {
         const filename = url.split("/").slice(-1)[0];
         const cats = filename.split("_")[0];
         const time = new Date(+filename.split(/[_\.]/g)[1]).toLocaleString(
@@ -89,8 +89,12 @@ export default function Home() {
           originalTime: +filename.split(/[_\.]/g)[1],
           time,
           cats,
-          orientation,
           caption,
+          dims: width
+            ? { width, height }
+            : orientation === "portrait"
+            ? Orientation.PORTRAIT
+            : Orientation.LANDSCAPE,
         };
       });
       setImages(i);
@@ -205,9 +209,7 @@ export default function Home() {
             <Image
               src={selectedImage.url}
               alt={selectedImage.filename}
-              {...(selectedImage.orientation === "portrait"
-                ? Orientation.PORTRAIT
-                : Orientation.LANDSCAPE)}
+              {...selectedImage.dims}
               layout='intrinsic'
               sx={{
                 borderRadius: "15px",
@@ -348,9 +350,7 @@ export default function Home() {
                 <Image
                   src={image.url}
                   alt={image.filename}
-                  {...(image.orientation === "portrait"
-                    ? Orientation.PORTRAIT
-                    : Orientation.LANDSCAPE)}
+                  {...image.dims}
                   key={image.url}
                   layout='responsive'
                   onClick={() => setSelectedImage(image)}

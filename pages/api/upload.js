@@ -21,6 +21,8 @@ function sendUploadToGCS(req, res, next) {
     const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
     const orientation = req.headers["orientation"]; // portrait or landscape
     const caption = req.headers["caption"]; // portrait or landscape
+    const width = req.headers["width"]; // portrait or landscape
+    const height = req.headers["height"]; // portrait or landscape
 
     const uploadedFile = req.files[0];
 
@@ -41,6 +43,8 @@ function sendUploadToGCS(req, res, next) {
         metadata: {
           orientation: orientation,
           caption,
+          width,
+          height,
         },
       },
       resumable: false,

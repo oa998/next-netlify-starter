@@ -1,5 +1,6 @@
 import { Button, Group, SegmentedControl, TextInput } from "@mantine/core";
 import axios from "axios";
+import Compressor from "compressorjs";
 import { useCallback, useRef, useState } from "react";
 import { Activity, Home } from "tabler-icons-react";
 
@@ -12,7 +13,7 @@ export default (props) => {
   const [caption, setCaption] = useState("");
 
   const onChange = useCallback(
-    async (formData, checks) => {
+    async (formData, checks, { width, height }) => {
       // Send "checks" as a header to easily append to file name for upload. Very hacky
       // also time
       const time = new Date();
@@ -26,16 +27,12 @@ export default (props) => {
           time: time.getTime(),
           orientation,
           caption,
+          width,
+          height,
         },
-        // onUploadProgress: (event) => {
-        //   console.log(
-        //     `Current progress:`,
-        //     Math.round((event.loaded * 100) / event.total)
-        //   );
-        // },
       };
 
-      const response = await axios
+      axios
         .post("/api/upload", formData, config)
         .then((response) => {
           document.querySelector("#feedback").innerText = "Submitted";
@@ -61,12 +58,6 @@ export default (props) => {
         return;
       }
 
-      const formData = new FormData();
-
-      Array.from(event.target.files).forEach((file) => {
-        formData.append(event.target.name, file);
-      });
-
       const checks = [...document.querySelectorAll('input[type="checkbox"]')]
         .map((x) => ({
           value: x.value,
@@ -78,8 +69,39 @@ export default (props) => {
         document.querySelector("#error").innerText =
           "must choose 1 or more cats";
       } else {
-        onChange(formData, checks.map(({ value }) => value).join(""));
+        const _URL = window.URL || window.webkitURL;
+        const file = event.target.files[0];
+        const img = new Image();
+        const objectUrl = _URL.createObjectURL(file);
+        img.onload = function () {
+          const [width, height] = [this.width, this.height];
+
+          new Compressor(file, {
+            quality: 0.5,
+            convertTypes: ["image/webp"],
+
+            // The compression process is asynchronous,
+            // which means you have to access the `result` in the `success` hook function.
+            success(compressedFile) {
+              const formData = new FormData();
+
+              // The third parameter is required for server
+              formData.append(event.target.name, compressedFile);
+
+              onChange(formData, checks.map(({ value }) => value).join(""), {
+                width,
+                height,
+              });
+            },
+            error(err) {
+              document.querySelector("#error").innerText = new String(err);
+            },
+          });
+          _URL.revokeObjectURL(objectUrl);
+        };
+        img.src = objectUrl;
       }
+
       formRef.current?.reset();
     },
     [onChange]
