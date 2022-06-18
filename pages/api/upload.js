@@ -18,7 +18,7 @@ const credential = JSON.parse(
 function sendUploadToGCS(req, res, next) {
   return new Promise((resolve, reject) => {
     const checks = req.headers["checks"]; // a string like "ap" for "arya" and "pik"
-    const time = req.headers["time"]; // a string like "ap" for "arya" and "pik"
+    const time = req.headers["time"]; // a string value of time since EPOCH
     const caption = req.headers["caption"]; // portrait or landscape
     const width = req.headers["width"]; // portrait or landscape
     const height = req.headers["height"]; // portrait or landscape
@@ -33,7 +33,7 @@ function sendUploadToGCS(req, res, next) {
       credentials: credential,
     });
 
-    const gcsname = `${checks}_${time}`;
+    const gcsname = `${9e12 - +time}_${checks}`;
     const bucket = gcpStorage.bucket(bucketName);
     const file = bucket.file(gcsname);
     const stream = file.createWriteStream({

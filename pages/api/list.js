@@ -10,7 +10,7 @@ const credential = JSON.parse(
   ).toString()
 );
 
-async function listAllFiles() {
+async function listAllFiles(previousPageToken) {
   // The ID of your GCS bucket
   const bucketName = "cdn_js";
 
@@ -19,7 +19,10 @@ async function listAllFiles() {
     credentials: credential,
   });
 
-  const [files] = await gcpStorage.bucket(bucketName).getFiles();
+  const [files, { pageToken }] = await gcpStorage.bucket(bucketName).getFiles({
+    maxResults: 10,
+    pageToken: previousPageToken,
+  });
   const returnList = [];
   for (const file of files) {
     const [data] = await file.getMetadata();
@@ -30,11 +33,15 @@ async function listAllFiles() {
     };
     returnList.push(obj);
   }
-  return returnList;
+  return {
+    files: returnList,
+    pageToken,
+  };
 }
 
 routes.get((req, res) => {
-  listAllFiles().then((files) => res.status(200).json({ files }));
+  const pageToken = req.query.pageToken;
+  listAllFiles(pageToken).then((data) => res.status(200).json(data));
 });
 
 export default routes;

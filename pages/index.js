@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Home2, Trees } from "tabler-icons-react";
 import { durationSince } from "util/date";
 
@@ -61,43 +61,53 @@ export default function Home() {
   const [ping, setPing] = useState({});
   const [processedCats, setProcessedCats] = useState([]);
   const [selectedImage, setSelectedImage] = useState("");
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [prevPageToken, setPrevPageToken] = useState("");
 
   useEffect(() => {
-    // get images to show
-    axios("/api/list").then(({ data }) => {
-      const { files } = data;
-      const i = files.map(({ url, orientation, caption, width, height }) => {
-        const filename = url.split("/").slice(-1)[0];
-        const cats = filename.split("_")[0];
-        const time = new Date(+filename.split(/[_\.]/g)[1]).toLocaleString(
-          "en-US",
-          {
+    if (!!loadedCount && loadedCount >= images.length - 1) {
+      getNextPage(prevPageToken);
+    }
+  }, [loadedCount, prevPageToken, images]);
+
+  const getNextPage = useCallback((pageTokenFromLastRequest) => {
+    axios(`/api/list?pageToken=${pageTokenFromLastRequest}`).then(
+      ({ data }) => {
+        const { files, pageToken } = data;
+        const i = files.map(({ url, orientation, caption, width, height }) => {
+          const filename = url.split("/").slice(-1)[0];
+          const cats = filename.split("_")[1];
+          const dateNumber = 9e12 - +filename.split(/[_\.]/g)[0];
+          const time = new Date(dateNumber).toLocaleString("en-US", {
             weekday: "long",
             month: "long",
             day: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-          }
-        );
-        if (url.includes("397")) {
-          console.log({ width, height });
-        }
-        return {
-          url,
-          filename,
-          originalTime: +filename.split(/[_\.]/g)[1],
-          time,
-          cats,
-          caption,
-          dims: width
-            ? { width, height }
-            : orientation === "portrait"
-            ? Orientation.PORTRAIT
-            : Orientation.LANDSCAPE,
-        };
-      });
-      setImages(i);
-    });
+          });
+          return {
+            url,
+            filename,
+            originalTime: +filename.split(/[_\.]/g)[1],
+            time,
+            cats,
+            caption,
+            dims: width
+              ? { width, height }
+              : orientation === "portrait"
+              ? Orientation.PORTRAIT
+              : Orientation.LANDSCAPE,
+          };
+        });
+        setImages((existing) => existing.concat(i));
+        setPrevPageToken(pageToken);
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    // get first page
+    getNextPage(prevPageToken);
 
     // get cat latest state
     axios("/api/ping").then(({ data }) => {
@@ -346,8 +356,6 @@ export default function Home() {
                 }}
                 key={image.url}
               >
-                {image.url.includes("397") &&
-                  console.log({ url: image.url, dimsz: image.dims })}
                 <Image
                   src={image.url}
                   alt={image.filename}
@@ -355,6 +363,9 @@ export default function Home() {
                   key={image.url}
                   layout='responsive'
                   onClick={() => setSelectedImage(image)}
+                  onLoadingComplete={() => {
+                    setLoadedCount((c) => c + 1);
+                  }}
                 />
                 <Group style={{ padding: "5px" }}>
                   {image.cats.split("").map((letter) => {
